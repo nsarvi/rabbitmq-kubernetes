@@ -109,15 +109,20 @@ Access Grafana
 http://localhost:3000/
 
 Configure prometheus datasource to use the prometheus
+
+![Alt text](images/Promtheus-datasource.png?raw=true "Title")
+
 ![Promtheus Datasource](./images/Promtheus-datasource.png)
 
 ### Import the dashboards
 
 Import the below pre-built dashboard
 RabbitMQ overview
+
 `https://grafana.com/grafana/dashboards/10991`
 
 Quorum queues
+
 `https://grafana.com/grafana/dashboards/11340`
 
 Node level metrics
