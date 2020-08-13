@@ -45,15 +45,15 @@ You can customize RMQ pod for various configurations, check out the operator doc
 This document follows Promtheus operator way of installing Promtheus. Checkout the latest prometheus
 Per the support matrix of Prometheus, Promtheus operator release-0.4 is supported on K8s 1.17.
 
-`git clone https://github.com/prometheus-operator/kube-prometheus.git
-cd kube-prometheus
-git checkout -b release-0.4`
+`git clone https://github.com/prometheus-operator/kube-prometheus.git`
+`cd kube-prometheus`
+`git checkout -b release-0.4`
 
 Install various components such as podmonitor, servicemonitor etc.
 
-`kubectl create -f ~/kube-prometheus/manifests/setup
-until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
-kubectl create -f ~/kube-prometheus/manifests/`
+`kubectl create -f ~/kube-prometheus/manifests/setup`
+`until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done`
+`kubectl create -f ~/kube-prometheus/manifests/`
 
 Check if  crds for podmonitor, alertmanager are all created using below command.
 
@@ -61,34 +61,34 @@ Check if  crds for podmonitor, alertmanager are all created using below command.
 
 ## Enable prometheus operator to monitor Rabbit cluster
 
-`kubectl apply -f ./prometheus/rabbitmq-podmonitor.yaml
-kubectl apply -f ./prometheus/rabbitmq-servicemonitor.yaml
-kubectl apply -f ./prometheus/prometheus-roles.yaml`
+`kubectl apply -f ./prometheus/rabbitmq-podmonitor.yaml`
+`kubectl apply -f ./prometheus/rabbitmq-servicemonitor.yaml`
+`kubectl apply -f ./prometheus/prometheus-roles.yaml`
 
 ## Expose ports
 This method follows the ClusterIP, so we are port-forwarding to access RabbitMQ management, Grafana and Promtheus UI
 
-`instance=$(kubectl get RabbitmqCluster -o yaml -o jsonpath="{ .items[0]['metadata.name'] }")
- kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090
- kubectl --namespace monitoring port-forward svc/grafana 3000`
+`instance=$(kubectl get RabbitmqCluster -o yaml -o jsonpath="{ .items[0]['metadata.name'] }")`
+ `kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090`
+ `kubectl --namespace monitoring port-forward svc/grafana 3000`
 
 Access management URL
 `kubectl port-forward svc/${instance}-rabbitmq-client 15672`
 
 ## Run a workload, within a cluster
 
-`instance=$(kubectl get RabbitmqCluster -o yaml -o jsonpath="{ .items[0]['metadata.name'] }")
- username=$(kubectl get secret ${instance}-rabbitmq-admin -o jsonpath="{.data.username}" | base64 --decode)
- password=$(kubectl get secret ${instance}-rabbitmq-admin -o jsonpath="{.data.password}" | base64 --decode)
- service=${instance}-rabbitmq-client
- kubectl run perf-test --image=pivotalrabbitmq/perf-test -- --uri "amqp://${username}:${password}@${service}"`
+`instance=$(kubectl get RabbitmqCluster -o yaml -o jsonpath="{ .items[0]['metadata.name'] }")`
+ `username=$(kubectl get secret ${instance}-rabbitmq-admin -o jsonpath="{.data.username}" | base64 --decode)`
+ `password=$(kubectl get secret ${instance}-rabbitmq-admin -o jsonpath="{.data.password}" | base64 --decode)`
+ `service=${instance}-rabbitmq-client
+ `kubectl run perf-test --image=pivotalrabbitmq/perf-test -- --uri "amqp://${username}:${password}@${service}"`
 
  Run a test connecting externally from
 
 `kubectl port-forward svc/${instance}-rabbitmq-client 5672`
 
 
-## Metrics
+## Test Metrics
 Locally, we can test if the metrics are getting through the plugin.
 
 `kubectl --namespace monitoring port-forward ${instance}-rabbitmq-client 15692`
@@ -98,6 +98,32 @@ Access the UI or curl command
  http://localhost:15692/metrics
 
  `curl -s localhost:15692/metrics`
+
+## Grafana dashboards
+
+Access prometheus to ensure metrics are displayed
+http://localhost:9090/
+
+
+Access Grafana
+http://localhost:3000/
+
+Configure prometheus datasource to use the prometheus
+![Promtheus Datasource](./images/Promtheus-datasource.png)
+
+### Import the dashboards
+
+Import the below pre-built dashboard
+RabbitMQ overview
+`https://grafana.com/grafana/dashboards/10991`
+
+Quorum queues
+`https://grafana.com/grafana/dashboards/11340`
+
+Node level metrics
+
+`https://github.com/prometheus/node_exporter`
+
 
 ## Clean up prometheus and operator
 for n in $(kubectl get namespaces -o jsonpath={..metadata.name}); do
