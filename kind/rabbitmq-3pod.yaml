@@ -1,0 +1,11 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-3pod-cluster
+spec:
+  replicas: 3
+  service:
+    type: ClusterIP
+  persistence:
+    storageClassName: standard
+    storage: 1Gi
