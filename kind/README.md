@@ -110,7 +110,7 @@ http://localhost:3000/
 
 Configure prometheus datasource to use the prometheus
 
-![Promtheus Datasource](/images/Prometheus-datasource.png?raw=true "Promtheus Datasource")
+![Promtheus Datasource](kind/images/Prometheus-datasource.png)
 
 ### Import the dashboards
 
