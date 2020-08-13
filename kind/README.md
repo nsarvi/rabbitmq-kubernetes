@@ -110,7 +110,7 @@ http://localhost:3000/
 
 Configure prometheus datasource to use the prometheus
 
-![Alt text](images/Promtheus-datasource.png?raw=true "Title")
+![Alt text](./images/Promtheus-datasource.png?raw=true "Promtheus Datasource")
 
 ![Promtheus Datasource](./images/Promtheus-datasource.png)
 
